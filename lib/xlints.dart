@@ -29,25 +29,25 @@ PluginBase createPlugin() => _XlintsPlugin();
 class _XlintsPlugin extends PluginBase {
   @override
   List<LintRule> getLintRules(CustomLintConfigs configs) => [
-    // Widget performance rules
-    PreferConstConstructors(),
-    PreferListViewBuilder(),
-    AvoidListViewWithChildren(),
-    AvoidOpacityWidget(),
-    AvoidPaddingWrappingMarginWidget(),
-    AvoidShrinkWrapTrue(),
-    AvoidIntrinsicWidgets(),
-    AvoidControllerInBuild(),
-    AvoidWidgetOperatorEquals(),
-    AvoidSetStateInBuild(),
-    // Logic performance rules
-    AvoidJsonDecodeInBuild(),
-    AvoidHeavySyncWorkInBuild(),
-    PreferFinalLocals(),
-    AvoidRecreatingRegExp(),
-    AvoidListContainsInLargeLoops(),
-    AvoidRepeatedDateTimeNowInLoop(),
-    PreferCollectionIfSpreadOverTempLists(),
-    PreferStringBuffer(),
-  ];
+        // Widget performance rules
+        PreferConstConstructors(),
+        PreferListViewBuilder(),
+        AvoidListViewWithChildren(),
+        AvoidOpacityWidget(),
+        AvoidPaddingWrappingMarginWidget(),
+        AvoidShrinkWrapTrue(),
+        AvoidIntrinsicWidgets(),
+        AvoidControllerInBuild(),
+        AvoidWidgetOperatorEquals(),
+        AvoidSetStateInBuild(),
+        // Logic performance rules
+        AvoidJsonDecodeInBuild(),
+        AvoidHeavySyncWorkInBuild(),
+        PreferFinalLocals(),
+        AvoidRecreatingRegExp(),
+        AvoidListContainsInLargeLoops(),
+        AvoidRepeatedDateTimeNowInLoop(),
+        PreferCollectionIfSpreadOverTempLists(),
+        PreferStringBuffer(),
+      ];
 }

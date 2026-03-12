@@ -1,3 +1,13 @@
+## 1.0.3
+
+- Fixed pana/pub.dev analyzer plugin failures during static analysis and downgrade checks.
+- Removed `lib/analysis_options.yaml` to avoid analyzer scanning conflicts in package subdirectories.
+- Standardized configuration usage to `package:xlints/analysis_options_xlints.yaml`.
+- Updated `README.md` and `example/README.md` to match the new configuration path.
+- Updated `example/analysis_options.yaml` to use `analysis_options_xlints.yaml`.
+- Removed unused `lints` dev dependency.
+- Formatted source files to satisfy static analysis formatting checks.
+
 ## 1.0.2
 
 - Added new logic/performance rules:
