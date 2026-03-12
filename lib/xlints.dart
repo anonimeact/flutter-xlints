@@ -1,6 +1,13 @@
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
+import 'src/rules/logic/avoid_heavy_sync_work_in_build.dart';
+import 'src/rules/logic/avoid_json_decode_in_build.dart';
+import 'src/rules/logic/avoid_list_contains_in_large_loops.dart';
+import 'src/rules/logic/avoid_recreating_regexp.dart';
+import 'src/rules/logic/avoid_repeated_datetime_now_in_loop.dart';
 import 'src/rules/logic/prefer_string_buffer.dart';
+import 'src/rules/logic/prefer_collection_if_spread_over_temp_lists.dart';
+import 'src/rules/logic/prefer_final_locals.dart';
 import 'src/rules/widget/avoid_listview_with_children.dart';
 import 'src/rules/widget/avoid_controller_in_build.dart';
 import 'src/rules/widget/avoid_intrinsic_widgets.dart';
@@ -34,6 +41,13 @@ class _XlintsPlugin extends PluginBase {
     AvoidWidgetOperatorEquals(),
     AvoidSetStateInBuild(),
     // Logic performance rules
+    AvoidJsonDecodeInBuild(),
+    AvoidHeavySyncWorkInBuild(),
+    PreferFinalLocals(),
+    AvoidRecreatingRegExp(),
+    AvoidListContainsInLargeLoops(),
+    AvoidRepeatedDateTimeNowInLoop(),
+    PreferCollectionIfSpreadOverTempLists(),
     PreferStringBuffer(),
   ];
 }

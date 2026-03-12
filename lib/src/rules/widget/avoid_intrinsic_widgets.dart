@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -30,7 +32,7 @@ class AvoidIntrinsicWidgets extends DartLintRule {
     context.registry.addInstanceCreationExpression((node) {
       final typeName = WidgetUtils.getTypeName(node);
       if (WidgetUtils.intrinsicWidgets.contains(typeName)) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
     });
   }

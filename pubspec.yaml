@@ -1,15 +1,24 @@
 name: xlints
-description: Flutter performance linter that detects costly code patterns and provides actionable optimization guidance.
-version: 1.0.1
+description: Flutter performance linter that detects costly code patterns and
+  provides actionable optimization guidance.
+version: 1.0.2
 repository: https://github.com/anonimeact/flutter-xlints.git
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
 
 environment:
-  sdk: ^3.10.4
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  analyzer: ^6.0.0
-  custom_lint: ^0.6.0
-  custom_lint_builder: ^0.6.0
+  analyzer: ^8.4.0
+  analyzer_plugin: ^0.13.10
+  custom_lint: ^0.8.1
+  custom_lint_builder: ^0.8.1
 
 dev_dependencies:
   lints: ^6.0.0

@@ -1,7 +1,9 @@
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
-import 'package:analyzer/source/source_range.dart';
+// ignore_for_file: deprecated_member_use
+
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/error/error.dart' show AnalysisError;
+import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../../utils/widget_utils.dart';
@@ -54,7 +56,7 @@ class AvoidPaddingWrappingMarginWidget extends DartLintRule {
 
       for (final arg in child.argumentList.arguments) {
         if (arg is NamedExpression && arg.name.label.name == 'margin') {
-          reporter.reportErrorForNode(code, node);
+          reporter.atNode(node, code);
           return;
         }
       }

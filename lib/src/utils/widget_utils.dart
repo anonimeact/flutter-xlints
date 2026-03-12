@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:analyzer/dart/ast/ast.dart';
 
 /// Utility class for extracting and checking widget type information from AST nodes.

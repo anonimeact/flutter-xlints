@@ -1,5 +1,7 @@
-import 'package:analyzer/dart/ast/ast.dart';
+// ignore_for_file: deprecated_member_use
+
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../../utils/widget_utils.dart';
@@ -34,7 +36,7 @@ class AvoidControllerInBuild extends DartLintRule {
       final method = node.thisOrAncestorOfType<MethodDeclaration>();
       if (method == null || method.name.lexeme != 'build') return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }

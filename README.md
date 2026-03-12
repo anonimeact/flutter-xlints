@@ -267,6 +267,166 @@ void _increment() {
 </details>
 
 <details>
+<summary><code>xlints_avoid_json_decode_in_build</code></summary>
+
+Detects `jsonDecode` usage inside `build()`.
+
+BAD:
+```dart
+@override
+Widget build(BuildContext context) {
+  final data = jsonDecode(rawJson);
+  return Text('${data['title']}');
+}
+```
+
+GOOD:
+```dart
+late final Map<String, dynamic> data;
+
+@override
+void initState() {
+  super.initState();
+  data = jsonDecode(rawJson) as Map<String, dynamic>;
+}
+```
+</details>
+
+<details>
+<summary><code>xlints_avoid_heavy_sync_work_in_build</code></summary>
+
+Detects heavy synchronous collection work in `build()`.
+
+BAD:
+```dart
+@override
+Widget build(BuildContext context) {
+  final values = items.toList()..sort();
+  return Text('${values.first}');
+}
+```
+
+GOOD:
+```dart
+late final List<int> sorted;
+
+@override
+void initState() {
+  super.initState();
+  sorted = items.toList()..sort();
+}
+```
+</details>
+
+<details>
+<summary><code>xlints_prefer_final_locals</code></summary>
+
+Detects local `var` variables that are never reassigned.
+
+BAD:
+```dart
+void logValue() {
+  var message = 'ready';
+  print(message);
+}
+```
+
+GOOD:
+```dart
+void logValue() {
+  final message = 'ready';
+  print(message);
+}
+```
+</details>
+
+<details>
+<summary><code>xlints_avoid_recreating_regexp</code></summary>
+
+Detects repeated `RegExp(...)` creation in loops/build.
+
+BAD:
+```dart
+for (final item in items) {
+  final r = RegExp(r'\d+');
+  if (r.hasMatch(item)) {}
+}
+```
+
+GOOD:
+```dart
+final r = RegExp(r'\d+');
+for (final item in items) {
+  if (r.hasMatch(item)) {}
+}
+```
+</details>
+
+<details>
+<summary><code>xlints_avoid_list_contains_in_large_loops</code></summary>
+
+Detects `list.contains(...)` calls inside loops.
+
+BAD:
+```dart
+for (final id in ids) {
+  if (selectedIds.contains(id)) {}
+}
+```
+
+GOOD:
+```dart
+final selectedSet = selectedIds.toSet();
+for (final id in ids) {
+  if (selectedSet.contains(id)) {}
+}
+```
+</details>
+
+<details>
+<summary><code>xlints_avoid_repeated_datetime_now_in_loop</code></summary>
+
+Detects repeated `DateTime.now()` calls inside loops.
+
+BAD:
+```dart
+for (var i = 0; i < 100; i++) {
+  final now = DateTime.now();
+  consume(now);
+}
+```
+
+GOOD:
+```dart
+final now = DateTime.now();
+for (var i = 0; i < 100; i++) {
+  consume(now);
+}
+```
+</details>
+
+<details>
+<summary><code>xlints_prefer_collection_if_spread_over_temp_lists</code></summary>
+
+Detects temporary list accumulation patterns better expressed with collection literals.
+
+BAD:
+```dart
+final widgets = <Widget>[];
+if (showHeader) widgets.add(const Text('Header'));
+if (items.isNotEmpty) widgets.addAll(items.map(Text.new));
+```
+
+GOOD:
+```dart
+final widgets = <Widget>[
+  if (showHeader) const Text('Header'),
+  if (items.isNotEmpty) ...items.map(Text.new),
+];
+```
+</details>
+
+<details>
 <summary><code>xlints_prefer_string_buffer</code></summary>
 
 Detects string concatenation with `+` inside loops.

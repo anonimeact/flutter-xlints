@@ -7,6 +7,13 @@ import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 import 'package:xlints/xlints.dart';
 
+import 'package:xlints/src/rules/logic/avoid_heavy_sync_work_in_build.dart';
+import 'package:xlints/src/rules/logic/avoid_json_decode_in_build.dart';
+import 'package:xlints/src/rules/logic/avoid_list_contains_in_large_loops.dart';
+import 'package:xlints/src/rules/logic/avoid_recreating_regexp.dart';
+import 'package:xlints/src/rules/logic/avoid_repeated_datetime_now_in_loop.dart';
+import 'package:xlints/src/rules/logic/prefer_collection_if_spread_over_temp_lists.dart';
+import 'package:xlints/src/rules/logic/prefer_final_locals.dart';
 import 'package:xlints/src/rules/logic/prefer_string_buffer.dart';
 import 'package:xlints/src/rules/widget/avoid_listview_with_children.dart';
 import 'package:xlints/src/rules/widget/avoid_controller_in_build.dart';
@@ -47,7 +54,7 @@ void main() {
       final packageConfig = await parsePackageConfig(io.Directory.current);
       final configs = CustomLintConfigs.parse(null, packageConfig);
       final rules = plugin.getLintRules(configs);
-      expect(rules.length, greaterThanOrEqualTo(11));
+      expect(rules.length, greaterThanOrEqualTo(18));
     });
   });
 
@@ -82,6 +89,26 @@ class SizedBox {
 
 void build() {
   return const SizedBox(width: 10);
+}
+''');
+      final result = await _resolveFile(file);
+      final errors = await rule.testRun(result);
+
+      expect(errors, isEmpty);
+    });
+
+    test('does not report when constructor argument is non-const', () async {
+      final rule = PreferConstConstructors();
+      final file = _writeToTemporaryFile('''
+class Text {
+  final String data;
+  const Text(this.data);
+}
+
+String getLabel() => 'dynamic';
+
+void build() {
+  Text(getLabel());
 }
 ''');
       final result = await _resolveFile(file);
@@ -141,7 +168,7 @@ void build() {
       );
     });
 
-    test('PreferListViewBuilder reports ListView with children', () async {
+    test('PreferListViewBuilder reports generated children list', () async {
       final rule = PreferListViewBuilder();
       final file = _writeToTemporaryFile('''
 class ListView {
@@ -150,7 +177,7 @@ class ListView {
 }
 
 void build() {
-  return ListView(children: []);
+  return ListView(children: List.generate(50, (i) => i));
 }
 ''');
       final result = await _resolveFile(file);
@@ -430,6 +457,200 @@ class MyWidget extends StatelessWidget {
       expect(
         errors.first.errorCode.name,
         'xlints_avoid_widget_operator_equals',
+      );
+    });
+  });
+
+  group('AvoidJsonDecodeInBuild', () {
+    test('reports jsonDecode call inside build', () async {
+      final rule = AvoidJsonDecodeInBuild();
+      final file = _writeToTemporaryFile('''
+dynamic jsonDecode(String source) => {};
+
+class BuildContext {}
+class Widget {}
+
+class MyWidget {
+  Widget build(BuildContext context) {
+    final data = jsonDecode('{}');
+    return Widget();
+  }
+}
+''');
+      final result = await _resolveFile(file);
+      final errors = await rule.testRun(result);
+
+      expect(errors, hasLength(1));
+      expect(errors.first.errorCode.name, 'xlints_avoid_json_decode_in_build');
+    });
+  });
+
+  group('AvoidHeavySyncWorkInBuild', () {
+    test('reports expensive collection operation in build', () async {
+      final rule = AvoidHeavySyncWorkInBuild();
+      final file = _writeToTemporaryFile('''
+class BuildContext {}
+class Widget {}
+
+class ListX {
+  void sort() {}
+}
+
+class MyWidget {
+  Widget build(BuildContext context) {
+    final values = ListX();
+    values.sort();
+    return Widget();
+  }
+}
+''');
+      final result = await _resolveFile(file);
+      final errors = await rule.testRun(result);
+
+      expect(errors, hasLength(1));
+      expect(
+        errors.first.errorCode.name,
+        'xlints_avoid_heavy_sync_work_in_build',
+      );
+    });
+  });
+
+  group('PreferFinalLocals', () {
+    test('reports var local that is never reassigned', () async {
+      final rule = PreferFinalLocals();
+      final file = _writeToTemporaryFile('''
+void main() {
+  var name = 'xlints';
+  print(name);
+}
+''');
+      final result = await _resolveFile(file);
+      final errors = await rule.testRun(result);
+
+      expect(errors, hasLength(1));
+      expect(errors.first.errorCode.name, 'xlints_prefer_final_locals');
+    });
+
+    test('does not report var that is reassigned', () async {
+      final rule = PreferFinalLocals();
+      final file = _writeToTemporaryFile('''
+void main() {
+  var count = 0;
+  count = count + 1;
+}
+''');
+      final result = await _resolveFile(file);
+      final errors = await rule.testRun(result);
+
+      expect(errors, isEmpty);
+    });
+  });
+
+  group('AvoidRecreatingRegExp', () {
+    test('reports RegExp creation inside loop', () async {
+      final rule = AvoidRecreatingRegExp();
+      final file = _writeToTemporaryFile('''
+void main() {
+  for (var i = 0; i < 10; i++) {
+    final r = RegExp('a+');
+    print(r);
+  }
+}
+''');
+      final result = await _resolveFile(file);
+      final errors = await rule.testRun(result);
+
+      expect(errors, hasLength(1));
+      expect(errors.first.errorCode.name, 'xlints_avoid_recreating_regexp');
+    });
+  });
+
+  group('AvoidListContainsInLargeLoops', () {
+    test('reports contains call inside loop', () async {
+      final rule = AvoidListContainsInLargeLoops();
+      final file = _writeToTemporaryFile('''
+void main() {
+  final list = <int>[1, 2, 3];
+  for (var i = 0; i < 10; i++) {
+    list.contains(i);
+  }
+}
+''');
+      final result = await _resolveFile(file);
+      final errors = await rule.testRun(result);
+
+      expect(errors, hasLength(1));
+      expect(
+        errors.first.errorCode.name,
+        'xlints_avoid_list_contains_in_large_loops',
+      );
+    });
+
+    test('does not report set.contains inside loop', () async {
+      final rule = AvoidListContainsInLargeLoops();
+      final file = _writeToTemporaryFile('''
+void main() {
+  final set = <int>{1, 2, 3};
+  for (var i = 0; i < 10; i++) {
+    set.contains(i);
+  }
+}
+''');
+      final result = await _resolveFile(file);
+      final errors = await rule.testRun(result);
+
+      expect(errors, isEmpty);
+    });
+  });
+
+  group('AvoidRepeatedDateTimeNowInLoop', () {
+    test('reports DateTime.now in loop', () async {
+      final rule = AvoidRepeatedDateTimeNowInLoop();
+      final file = _writeToTemporaryFile('''
+class DateTime {
+  static DateTime now() => DateTime();
+}
+
+void main() {
+  for (var i = 0; i < 3; i++) {
+    final t = DateTime.now();
+    print(t);
+  }
+}
+''');
+      final result = await _resolveFile(file);
+      final errors = await rule.testRun(result);
+
+      expect(errors, hasLength(1));
+      expect(
+        errors.first.errorCode.name,
+        'xlints_avoid_repeated_datetime_now_in_loop',
+      );
+    });
+  });
+
+  group('PreferCollectionIfSpreadOverTempLists', () {
+    test('reports temp list accumulation pattern', () async {
+      final rule = PreferCollectionIfSpreadOverTempLists();
+      final file = _writeToTemporaryFile('''
+void main() {
+  final values = [1, 2, 3];
+  final out = <int>[];
+  if (values.isNotEmpty) {
+    out.add(0);
+  }
+  if (values.length > 1) {
+    out.addAll(values);
+  }
+}
+''');
+      final result = await _resolveFile(file);
+      final errors = await rule.testRun(result);
+
+      expect(errors, hasLength(1));
+      expect(
+        errors.first.errorCode.name,
+        'xlints_prefer_collection_if_spread_over_temp_lists',
       );
     });
   });

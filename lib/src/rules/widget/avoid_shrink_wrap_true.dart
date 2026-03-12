@@ -1,5 +1,7 @@
-import 'package:analyzer/dart/ast/ast.dart';
+// ignore_for_file: deprecated_member_use
+
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../../utils/widget_utils.dart';
@@ -37,7 +39,7 @@ class AvoidShrinkWrapTrue extends DartLintRule {
         if (arg.name.label.name != 'shrinkWrap') continue;
         if (arg.expression is BooleanLiteral &&
             (arg.expression as BooleanLiteral).value) {
-          reporter.reportErrorForNode(code, arg);
+          reporter.atNode(arg, code);
           return;
         }
       }

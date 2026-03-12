@@ -1,6 +1,8 @@
+// ignore_for_file: deprecated_member_use
+
+import 'package:analyzer/error/listener.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
-import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 /// Detects string concatenation using `+` inside loops.
@@ -45,7 +47,7 @@ class PreferStringBuffer extends DartLintRule {
 
       final hasStringLiteral = left is StringLiteral || right is StringLiteral;
       if (hasStringLiteral) {
-        reporter.reportErrorForNode(code, node);
+        reporter.atNode(node, code);
       }
     });
   }

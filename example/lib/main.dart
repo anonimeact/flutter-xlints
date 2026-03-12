@@ -4,8 +4,14 @@
 // Run `dart run custom_lint` or `flutter pub run custom_lint` to see the reports.
 //
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
+/// IMPORTANT:
+/// To show lint violations from this `example/` app, remove or comment out
+/// `exclude: example/**` in the package root `analysis_options.yaml`.
+/// If `example/**` is excluded, custom_lint will not report violations here.
 void main() => runApp(const XlintsExampleApp());
 
 class XlintsExampleApp extends StatelessWidget {
@@ -29,36 +35,32 @@ class BadExamplesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // xlints_avoid_listview_with_children / xlints_prefer_listview_builder
-    return ListView(
-      children: [
-        _buildTile(
-          context,
-          'Widget without const',
-          _WidgetWithoutConstScreen(),
-        ),
-        _buildTile(
-          context,
-          'ListView with children',
-          _ListViewWithChildrenScreen(),
-        ),
-        _buildTile(context, 'Opacity widget', _OpacityWidgetScreen()),
-        _buildTile(
-          context,
-          'Padding wrapping margin',
-          _PaddingWrappingMarginScreen(),
-        ),
-        _buildTile(
-          context,
-          'Widget operator ==',
-          _WidgetOperatorEqualsScreen(),
-        ),
-        _buildTile(context, 'shrinkWrap true', _ShrinkWrapScreen()),
-        _buildTile(context, 'Intrinsic widget', _IntrinsicWidgetScreen()),
-        _buildTile(context, 'Controller in build', _ControllerInBuildScreen()),
-        _buildTile(context, 'setState in build', _SetStateInBuildScreen()),
-        _buildTile(context, 'String concat in loop', _StringConcatScreen()),
-      ],
+    final screens = [
+      ('Widget without const', _WidgetWithoutConstScreen()),
+      ('ListView with children', _ListViewWithChildrenScreen()),
+      ('Opacity widget', _OpacityWidgetScreen()),
+      ('Padding wrapping margin', _PaddingWrappingMarginScreen()),
+      ('Widget operator ==', _WidgetOperatorEqualsScreen()),
+      ('shrinkWrap true', _ShrinkWrapScreen()),
+      ('Intrinsic widget', _IntrinsicWidgetScreen()),
+      ('Controller in build', _ControllerInBuildScreen()),
+      ('setState in build', _SetStateInBuildScreen()),
+      ('String concat in loop', _StringConcatScreen()),
+      ('jsonDecode in build', _JsonDecodeInBuildScreen()),
+      ('Heavy sync work in build', _HeavySyncWorkInBuildScreen()),
+      ('Prefer final locals', _PreferFinalLocalsScreen()),
+      ('RegExp in loop', _RegExpInLoopScreen()),
+      ('list.contains in loop', _ListContainsInLoopScreen()),
+      ('DateTime.now in loop', _DateTimeNowInLoopScreen()),
+      ('Temp list accumulation', _TempListAccumulationScreen()),
+    ];
+
+    return ListView.builder(
+      itemCount: screens.length,
+      itemBuilder: (_, i) {
+        final (title, screen) = screens[i];
+        return _buildTile(context, title, screen);
+      },
     );
   }
 
@@ -88,14 +90,16 @@ class _WidgetWithoutConstScreen extends StatelessWidget {
   }
 }
 
-/// xlints_avoid_listview_with_children / xlints_prefer_listview_builder
+/// xlints_avoid_listview_with_children
 class _ListViewWithChildrenScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('ListView with children')),
       body: ListView(
-        children: List.generate(100, (i) => ListTile(title: Text('Item $i'))),
+        children: [
+          ...List.generate(100, (i) => ListTile(title: Text('Item $i'))),
+        ],
       ),
     );
   }
@@ -230,6 +234,119 @@ class _SetStateInBuildScreenState extends State<_SetStateInBuildScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('setState in build')),
       body: Center(child: Text('Counter: $_counter')),
+    );
+  }
+}
+
+/// xlints_avoid_json_decode_in_build
+class _JsonDecodeInBuildScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final data =
+        jsonDecode('{"title":"decoded in build"}') as Map<String, dynamic>;
+    return Scaffold(
+      appBar: AppBar(title: const Text('jsonDecode in build')),
+      body: Center(child: Text(data['title'] as String)),
+    );
+  }
+}
+
+/// xlints_avoid_heavy_sync_work_in_build
+class _HeavySyncWorkInBuildScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final values = List.generate(1000, (i) => 1000 - i);
+    values.sort();
+    final topTen = values.where((e) => e.isEven).toList().take(10).toList();
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Heavy sync work in build')),
+      body: ListView(children: topTen.map((e) => Text('Value $e')).toList()),
+    );
+  }
+}
+
+/// xlints_prefer_final_locals
+class _PreferFinalLocalsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var title = 'Prefer final locals';
+    return Scaffold(
+      appBar: AppBar(title: const Text('Prefer final locals')),
+      body: Center(child: Text(title)),
+    );
+  }
+}
+
+/// xlints_avoid_recreating_regexp
+class _RegExpInLoopScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var totalMatches = 0;
+    final values = List.generate(20, (i) => 'item-$i');
+    for (final value in values) {
+      final regex = RegExp(r'\d+');
+      if (regex.hasMatch(value)) {
+        totalMatches++;
+      }
+    }
+    return Scaffold(
+      appBar: AppBar(title: const Text('RegExp in loop')),
+      body: Center(child: Text('Matches: $totalMatches')),
+    );
+  }
+}
+
+/// xlints_avoid_list_contains_in_large_loops
+class _ListContainsInLoopScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final lookup = List.generate(300, (i) => i);
+    var count = 0;
+    for (var i = 0; i < 300; i++) {
+      if (lookup.contains(i)) {
+        count++;
+      }
+    }
+    return Scaffold(
+      appBar: AppBar(title: const Text('list.contains in loop')),
+      body: Center(child: Text('Found: $count')),
+    );
+  }
+}
+
+/// xlints_avoid_repeated_datetime_now_in_loop
+class _DateTimeNowInLoopScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final stamps = <DateTime>[];
+    for (var i = 0; i < 5; i++) {
+      stamps.add(DateTime.now());
+    }
+    return Scaffold(
+      appBar: AppBar(title: const Text('DateTime.now in loop')),
+      body: Center(child: Text('Collected: ${stamps.length}')),
+    );
+  }
+}
+
+/// xlints_prefer_collection_if_spread_over_temp_lists
+class _TempListAccumulationScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final showHeader = true;
+    final values = [1, 2, 3];
+    final widgets = <Widget>[];
+    if (showHeader) {
+      widgets.add(const Text('Header'));
+    }
+    if (values.isNotEmpty) {
+      widgets.addAll(values.map((e) => Text('Item $e')));
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Temp list accumulation')),
+      body: Column(children: widgets),
     );
   }
 }

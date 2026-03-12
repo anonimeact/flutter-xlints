@@ -1,5 +1,7 @@
-import 'package:analyzer/dart/ast/ast.dart';
+// ignore_for_file: deprecated_member_use
+
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../../utils/widget_utils.dart';
@@ -37,8 +39,10 @@ class PreferListViewBuilder extends DartLintRule {
       if (constructorName?.name == 'builder') return;
 
       for (final arg in node.argumentList.arguments) {
-        if (arg is NamedExpression && arg.name.label.name == 'children') {
-          reporter.reportErrorForNode(code, node);
+        if (arg is NamedExpression &&
+            arg.name.label.name == 'children' &&
+            arg.expression is! ListLiteral) {
+          reporter.atNode(node, code);
           return;
         }
       }

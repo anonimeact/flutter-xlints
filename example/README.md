@@ -41,6 +41,27 @@ This app demonstrates widgets and logic that cause poor performance. Each screen
 - String concat in loop:
   - Rule: `xlints_prefer_string_buffer`
   - Pattern: `result = result + 'x'` in a loop
+- jsonDecode in build:
+  - Rule: `xlints_avoid_json_decode_in_build`
+  - Pattern: `jsonDecode(...)` called inside `build()`
+- Heavy sync work in build:
+  - Rule: `xlints_avoid_heavy_sync_work_in_build`
+  - Pattern: expensive list ops (`sort`, `toList`, `reduce`, `fold`) in `build()`
+- Prefer final locals:
+  - Rule: `xlints_prefer_final_locals`
+  - Pattern: local `var` that is never reassigned
+- RegExp in loop:
+  - Rule: `xlints_avoid_recreating_regexp`
+  - Pattern: creating `RegExp(...)` repeatedly in loop/build
+- list.contains in loop:
+  - Rule: `xlints_avoid_list_contains_in_large_loops`
+  - Pattern: `list.contains(...)` inside loops
+- DateTime.now in loop:
+  - Rule: `xlints_avoid_repeated_datetime_now_in_loop`
+  - Pattern: repeated `DateTime.now()` inside loops
+- Temp list accumulation:
+  - Rule: `xlints_prefer_collection_if_spread_over_temp_lists`
+  - Pattern: building temporary list via multiple `add/addAll` + conditionals
 
 ## Run Lint
 

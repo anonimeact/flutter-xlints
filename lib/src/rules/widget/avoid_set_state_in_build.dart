@@ -1,5 +1,7 @@
-import 'package:analyzer/dart/ast/ast.dart';
+// ignore_for_file: deprecated_member_use
+
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 /// Detects [setState] calls inside the [build] method.
@@ -33,7 +35,7 @@ class AvoidSetStateInBuild extends DartLintRule {
       if (buildMethod == null) return;
       if (buildMethod.name.lexeme != 'build') return;
 
-      reporter.reportErrorForNode(code, node);
+      reporter.atNode(node, code);
     });
   }
 }
