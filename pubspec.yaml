@@ -1,6 +1,7 @@
 name: xlints
 description: Flutter performance linter - mendeteksi pola kode yang menyebabkan performa aplikasi buruk dan memberikan rekomendasi perbaikan.
 version: 1.0.0
+repository: https://github.com/anonimeact/flutter-xlints.git
 
 environment:
   sdk: ^3.10.4
