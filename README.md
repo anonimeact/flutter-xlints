@@ -1,15 +1,13 @@
 # xlints
 
-Lint package untuk Flutter yang fokus pada isu performa widget dan logic.
+`xlints` is a Flutter lint package focused on widget and logic performance.
 
-## Rule yang tersedia
-
-### Custom lint rules
+## Available Rules
 
 <details>
 <summary><code>xlints_prefer_const_constructors</code></summary>
 
-Deteksi widget yang bisa `const` tapi belum `const`.
+Detects widgets that can be `const` but are not marked `const`.
 
 BAD:
 ```dart
@@ -35,7 +33,7 @@ Widget build(BuildContext context) {
 <details>
 <summary><code>xlints_prefer_listview_builder</code></summary>
 
-Deteksi list panjang yang sebaiknya pakai `.builder`.
+Detects long lists that should use `.builder`.
 
 BAD:
 ```dart
@@ -56,7 +54,7 @@ ListView.builder(
 <details>
 <summary><code>xlints_avoid_listview_with_children</code></summary>
 
-Deteksi penggunaan `ListView/GridView(children: ...)` yang membangun semua item sekaligus.
+Detects `ListView/GridView(children: ...)` usage that builds all items eagerly.
 
 BAD:
 ```dart
@@ -78,7 +76,7 @@ GridView.builder(
 <details>
 <summary><code>xlints_avoid_opacity_widget</code></summary>
 
-Deteksi penggunaan `Opacity` untuk kasus yang bisa dihindari.
+Detects `Opacity` usage in cases where a cheaper alternative is preferred.
 
 BAD:
 ```dart
@@ -101,7 +99,7 @@ AnimatedOpacity(
 <details>
 <summary><code>xlints_avoid_padding_wrapping_margin_widget</code></summary>
 
-Deteksi `Padding` yang membungkus child yang sudah punya `margin`.
+Detects `Padding` wrapping a child that already uses `margin`.
 
 BAD:
 ```dart
@@ -126,7 +124,7 @@ Container(
 <details>
 <summary><code>xlints_avoid_shrink_wrap_true</code></summary>
 
-Deteksi `shrinkWrap: true` pada list/grid yang dapat menambah biaya layout.
+Detects `shrinkWrap: true` on list/grid widgets, which can increase layout cost.
 
 BAD:
 ```dart
@@ -150,7 +148,7 @@ Expanded(
 <details>
 <summary><code>xlints_avoid_intrinsic_widgets</code></summary>
 
-Deteksi `IntrinsicHeight/IntrinsicWidth` yang mahal di layout.
+Detects expensive `IntrinsicHeight/IntrinsicWidth` usage.
 
 BAD:
 ```dart
@@ -171,7 +169,7 @@ SizedBox(
 <details>
 <summary><code>xlints_avoid_controller_in_build</code></summary>
 
-Deteksi pembuatan controller/node di dalam `build()`.
+Detects controller/node creation inside `build()`.
 
 BAD:
 ```dart
@@ -219,7 +217,7 @@ class _MyState extends State<MyWidget> {
 <details>
 <summary><code>xlints_avoid_widget_operator_equals</code></summary>
 
-Deteksi override `operator ==` di turunan `Widget`.
+Detects `operator ==` override on `Widget` subclasses.
 
 BAD:
 ```dart
@@ -249,7 +247,7 @@ class MyCard extends StatelessWidget {
 <details>
 <summary><code>xlints_avoid_set_state_in_build</code></summary>
 
-Deteksi `setState()` di method `build()`.
+Detects `setState()` calls inside `build()`.
 
 BAD:
 ```dart
@@ -271,7 +269,7 @@ void _increment() {
 <details>
 <summary><code>xlints_prefer_string_buffer</code></summary>
 
-Deteksi string concatenation dengan `+` di dalam loop.
+Detects string concatenation with `+` inside loops.
 
 BAD:
 ```dart
@@ -291,106 +289,106 @@ final result = buffer.toString();
 ```
 </details>
 
-## Prasyarat
+## Prerequisites
 
-- Flutter SDK aktif di environment.
-- Dart SDK sesuai constraint package (`sdk: ^3.10.4`).
+- Flutter SDK available in your environment.
+- Dart SDK compatible with this package (`sdk: ^3.10.4`).
 
-## Instalasi
+## Installation
 
-### Opsi A: dari pub.dev
+### Option A: from pub.dev
 
-Tambahkan ke `dev_dependencies`:
+Add this to `dev_dependencies`:
 
 ```yaml
 dev_dependencies:
   xlints: ^1.0.0
 ```
 
-Jalankan:
+Run:
 
 ```bash
 flutter pub get
 ```
 
-### Opsi B: dari local path (untuk development package ini)
+### Option B: from a local path (for local development)
 
 ```yaml
 dev_dependencies:
   xlints:
-    path: ../path-ke-xlints
+    path: ../path-to-xlints
 ```
 
-Jalankan:
+Run:
 
 ```bash
 flutter pub get
 ```
 
-## Setup `analysis_options.yaml`
+## Configure `analysis_options.yaml`
 
-Pilih salah satu.
+Choose one option.
 
-### Opsi 1 (direkomendasikan): full config
+### Option 1 (recommended): full config
 
-Gunakan jika kamu belum punya baseline lint sendiri:
+Use this if you do not already have a lint baseline:
 
 ```yaml
 include: package:xlints/analysis_options.yaml
 ```
 
-Isi ini akan mengaktifkan:
+This enables:
 
 - `package:lints/recommended.yaml`
 - plugin `custom_lint`
 
-### Opsi 2: plugin-only
+### Option 2: plugin-only
 
-Gunakan jika project kamu sudah punya include lint lain (misalnya `flutter_lints`):
+Use this if your project already includes another lint config (for example `flutter_lints`):
 
 ```yaml
 include: package:xlints/analysis_options_xlints.yaml
 ```
 
-Catatan:
+Notes:
 
-- Tidak perlu menambah `custom_lint` manual di `pubspec.yaml`.
-- Tidak perlu menambah `analyzer.plugins` manual jika sudah include salah satu file di atas.
+- You do not need to add `custom_lint` manually to `pubspec.yaml`.
+- You do not need to add `analyzer.plugins` manually if you include one of the files above.
 
-## Cara menjalankan lint
+## Run Lints
 
-Jalankan dari root project aplikasi Flutter:
+Run from your Flutter app root:
 
 ```bash
 dart run custom_lint
 ```
 
-Alternatif:
+Alternative:
 
 ```bash
 flutter pub run custom_lint
 ```
 
-Untuk auto-apply fix yang tersedia:
+To auto-apply available fixes:
 
 ```bash
 dart run custom_lint --fix
 ```
 
-## Integrasi IDE
+## IDE Integration
 
-- Pastikan file `analysis_options.yaml` sudah benar.
-- Buka project ulang di IDE jika warning belum muncul.
-- Quick Fix bisa dipakai dari lightbulb action (untuk rule yang punya fix).
+- Make sure `analysis_options.yaml` is configured correctly.
+- Reopen the project if warnings do not appear.
+- Use lightbulb Quick Fix for rules that provide fixes.
 
-## Rule yang punya Quick Fix saat ini
+## Rules With Quick Fix (Current)
 
-- `xlints_prefer_const_constructors`: menambahkan keyword `const`.
-- `xlints_avoid_padding_wrapping_margin_widget`: menghapus `Padding` terluar.
+- `xlints_prefer_const_constructors`: adds the `const` keyword.
+- `xlints_avoid_padding_wrapping_margin_widget`: removes the outer `Padding`.
 
-## Konfigurasi rule
+## Rule Configuration
 
-Nonaktifkan rule tertentu:
+Disable specific rules:
 
 ```yaml
 include: package:xlints/analysis_options.yaml
@@ -401,43 +399,43 @@ custom_lint:
     - xlints_avoid_opacity_widget: false
 ```
 
-## Contoh penggunaan
+## Example Usage
 
-Project contoh ada di folder `example/`.
+An example project is available in `example/`.
 
-Jalankan:
+Run:
 
 ```bash
 cd example
 dart run custom_lint
 ```
 
-Contoh tersebut sengaja berisi pola "bad practice" agar semua rule `xlints` bisa terpicu.
+The example intentionally contains bad patterns to trigger all `xlints` rules.
 
 ## Troubleshooting
 
-### `include_file_not_found` untuk `package:xlints/analysis_options.yaml`
+### `include_file_not_found` for `package:xlints/analysis_options.yaml`
 
-Penyebab umum:
+Common causes:
 
-- `flutter pub get` belum dijalankan.
-- Package `xlints` belum masuk ke dependency graph project.
-- Salah path untuk dependency lokal.
+- `flutter pub get` has not been run.
+- `xlints` is not present in your dependency graph.
+- Incorrect local path dependency.
 
-Langkah cek:
+Checklist:
 
-1. Pastikan `pubspec.yaml` sudah memuat `xlints` di `dev_dependencies`.
-2. Jalankan ulang `flutter pub get`.
-3. Pastikan include persis:
+1. Ensure `pubspec.yaml` includes `xlints` in `dev_dependencies`.
+2. Run `flutter pub get` again.
+3. Ensure the include line is exactly:
    `include: package:xlints/analysis_options.yaml`
-4. Jalankan lagi `dart run custom_lint`.
+4. Run `dart run custom_lint` again.
 
-### Rule tidak muncul di IDE, tapi muncul di CLI
+### Rules do not appear in IDE, but appear in CLI
 
-1. Reload window / restart analysis server IDE.
-2. Pastikan project dibuka dari folder root yang memuat `analysis_options.yaml`.
+1. Reload the IDE window or restart the analysis server.
+2. Make sure the opened project root contains `analysis_options.yaml`.
 
-## Dependensi internal package
+## Internal Dependencies
 
 - `analyzer: ^6.0.0`
 - `custom_lint: ^0.6.0`
