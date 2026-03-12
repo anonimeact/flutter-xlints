@@ -487,30 +487,30 @@ flutter pub get
 
 ## Configure `analysis_options.yaml`
 
-Choose one option.
+### Option 1 (recommended)
 
-### Option 1 (recommended): full config
-
-Use this if you do not already have a lint baseline:
-
-```yaml
-include: package:xlints/analysis_options.yaml
-```
-
-This enables:
-
-- `package:lints/recommended.yaml`
-- plugin `custom_lint`
-
-### Option 2: plugin-only
-
-Use this if your project already includes another lint config (for example `flutter_lints`):
+Use the provided xlints config:
 
 ```yaml
 include: package:xlints/analysis_options_xlints.yaml
 ```
 
-Notes:
+This enables:
+
+- plugin `custom_lint`
+
+### Option 2 (manual merge with your existing lint baseline)
+
+If your project already includes another config (for example `flutter_lints`),
+keep your current `include:` and add this under `analyzer`:
+
+```yaml
+analyzer:
+  plugins:
+    - custom_lint
+```
+
+Notes for both options:
 
 - You do not need to add `custom_lint` manually to `pubspec.yaml`.
 - You do not need to add `analyzer.plugins` manually if you include one of the files above.
@@ -551,7 +551,7 @@ dart run custom_lint --fix
 Disable specific rules:
 
 ```yaml
-include: package:xlints/analysis_options.yaml
+include: package:xlints/analysis_options_xlints.yaml
 
 custom_lint:
   rules:
@@ -574,7 +574,7 @@ The example intentionally contains bad patterns to trigger all `xlints` rules.
 
 ## Troubleshooting
 
-### `include_file_not_found` for `package:xlints/analysis_options.yaml`
+### `include_file_not_found` for `package:xlints/analysis_options_xlints.yaml`
 
 Common causes:
 
@@ -587,7 +587,7 @@ Checklist:
 1. Ensure `pubspec.yaml` includes `xlints` in `dev_dependencies`.
 2. Run `flutter pub get` again.
 3. Ensure the include line is exactly:
-   `include: package:xlints/analysis_options.yaml`
+   `include: package:xlints/analysis_options_xlints.yaml`
 4. Run `dart run custom_lint` again.
 
 ### Rules do not appear in IDE, but appear in CLI
@@ -597,6 +597,6 @@ Checklist:
 
 ## Internal Dependencies
 
-- `analyzer: ^6.0.0`
-- `custom_lint: ^0.6.0`
-- `custom_lint_builder: ^0.6.0`
+- `analyzer: ^8.4.0`
+- `custom_lint: ^0.8.1`
+- `custom_lint_builder: ^0.8.1`

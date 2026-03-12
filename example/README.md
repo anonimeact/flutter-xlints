@@ -77,7 +77,7 @@ Alternative:
 flutter pub run custom_lint
 ```
 
-**Note:** This example uses `include: package:xlints/analysis_options.yaml` in `analysis_options.yaml`, same as a normal consumer app.
+**Note:** This example uses `include: package:xlints/analysis_options_xlints.yaml` in `analysis_options.yaml`, same as a normal consumer app.
 
 ## Run the App
 
