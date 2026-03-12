@@ -1,0 +1,12 @@
+# Minimal xlints config - adds only the custom_lint plugin.
+#
+# Use this if you already have your own analysis_options.yaml (e.g. flutter_lints)
+# and only want to add xlints. Add to your analysis_options.yaml:
+#
+#   include: package:xlints/analysis_options_xlints.yaml
+#
+# No need to add custom_lint or analyzer.plugins manually.
+
+analyzer:
+  plugins:
+    - custom_lint

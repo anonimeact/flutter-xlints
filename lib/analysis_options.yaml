@@ -1,0 +1,13 @@
+# Full xlints config - recommended lints + custom_lint plugin.
+#
+# Use this from consuming projects:
+#
+#   include: package:xlints/analysis_options.yaml
+#
+# This file must live under `lib/` to be resolvable via package: URI.
+
+include: package:lints/recommended.yaml
+
+analyzer:
+  plugins:
+    - custom_lint
