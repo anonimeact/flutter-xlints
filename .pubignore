@@ -1,0 +1,4 @@
+# Exclude example from publish so pub.dev/pana only analyzes the main package.
+# Otherwise the nested example (with custom_lint plugin in analysis_options) can
+# cause "analyzer plugin" errors and Platform support 0/20 on pub.dev.
+example/

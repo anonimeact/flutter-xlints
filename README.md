@@ -487,7 +487,7 @@ flutter pub get
 
 ## Configure `analysis_options.yaml`
 
-### Option 1 (recommended)
+### Option 1: Fresh project
 
 Use the provided xlints config:
 
@@ -495,25 +495,50 @@ Use the provided xlints config:
 include: package:xlints/analysis_options_xlints.yaml
 ```
 
-This enables:
+This enables the `custom_lint` plugin.
 
-- plugin `custom_lint`
+### Option 2: Project already using flutter_lints (recommended for existing projects)
 
-### Option 2 (manual merge with your existing lint baseline)
+If your project already uses `flutter_lints` or another lint config, **keep your current `include:`** and add `plugins: [custom_lint]` under the `analyzer` section.
 
-If your project already includes another config (for example `flutter_lints`),
-keep your current `include:` and add this under `analyzer`:
+**Before (your current config):**
 
 ```yaml
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+
 analyzer:
+  errors:
+    invalid_annotation_target: ignore
+  enable-experiment:
+    - dot-shorthands
+```
+
+**After (add xlints):**
+
+```yaml
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+
+analyzer:
+  errors:
+    invalid_annotation_target: ignore
+  enable-experiment:
+    - dot-shorthands
   plugins:
     - custom_lint
 ```
 
-Notes for both options:
+The only change is adding `plugins: [custom_lint]` under `analyzer`. Your existing rules, errors, and experiments stay as-is.
 
-- You do not need to add `custom_lint` manually to `pubspec.yaml`.
-- You do not need to add `analyzer.plugins` manually if you include one of the files above.
+### Notes for both options
+
+- You do not need to add `custom_lint` manually to `pubspec.yaml`; xlints bundles it.
+- You do not need to add `analyzer.plugins` manually if you use Option 1 (include xlints config).
 
 ## Run Lints
 
@@ -548,22 +573,22 @@ dart run custom_lint --fix
 
 ## Rule Configuration
 
-Disable specific rules:
+Disable specific rules by adding a `custom_lint` section to your `analysis_options.yaml`:
 
 ```yaml
-include: package:xlints/analysis_options_xlints.yaml
-
 custom_lint:
   rules:
     - xlints_prefer_const_constructors: false
     - xlints_avoid_opacity_widget: false
 ```
 
+Works with both Option 1 (xlints-only) and Option 2 (flutter_lints + xlints).
+
 ## Example Usage
 
-An example project is available in `example/`.
+An example project is in the `example/` directory in the [GitHub repo](https://github.com/anonimeact/flutter-xlints) (it is not published to pub.dev so that pub.dev scoring does not hit analyzer plugin errors).
 
-Run:
+Run from the repo:
 
 ```bash
 cd example

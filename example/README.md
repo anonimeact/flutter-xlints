@@ -77,7 +77,7 @@ Alternative:
 flutter pub run custom_lint
 ```
 
-**Note:** This example uses `include: package:xlints/analysis_options_xlints.yaml` in `analysis_options.yaml`, same as a normal consumer app.
+**Note:** The example is not published to pub.dev (see root `.pubignore`) so that pub.dev scoring does not run the custom_lint plugin on a nested package, which can cause "Platform support 0/20". Get the example from the [GitHub repo](https://github.com/anonimeact/flutter-xlints).
 
 ## Run the App
 

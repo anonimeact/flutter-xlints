@@ -1,3 +1,9 @@
+## 1.0.4
+
+- Fixed Platform support by excluding `example/` from publish via `.pubignore`, so pana only analyzes the main package and no analyzer plugin runs on the nested example.
+- README: added "Using xlints with flutter_lints" with before/after `analysis_options.yaml` examples.
+- README: clarified that the example lives in the GitHub repo and is not published to pub.dev.
+
 ## 1.0.3
 
 - Fixed pana/pub.dev analyzer plugin failures during static analysis and downgrade checks.
