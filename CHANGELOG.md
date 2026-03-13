@@ -1,3 +1,7 @@
+## 1.0.5
+
+- Refined `xlints_prefer_const_constructors` for `Text` so it no longer suggests `const` when the main text argument is not a simple string literal (e.g. interpolated values like `"+$value"`), reducing false positives.
+
 ## 1.0.4
 
 - Fixed Platform support by excluding `example/` from publish via `.pubignore`, so pana only analyzes the main package and no analyzer plugin runs on the nested example.

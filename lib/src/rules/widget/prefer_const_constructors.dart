@@ -47,6 +47,24 @@ class PreferConstConstructors extends DartLintRule {
 
     final typeName = WidgetUtils.getTypeName(node);
     if (typeName == null) return false;
+
+    // Be conservative for Text: if the main text argument is not a simple
+    // string literal (e.g. it uses interpolation like "+$value"), treat it
+    // as non-const so we don't suggest const incorrectly.
+    if (typeName == 'Text') {
+      final positionalArgs = node.argumentList.arguments
+          .where((arg) => arg is! NamedExpression)
+          .toList();
+
+      if (positionalArgs.isNotEmpty) {
+        final first = positionalArgs.first;
+        final expr = first is NamedExpression ? first.expression : first;
+        if (expr is! SimpleStringLiteral) {
+          return false;
+        }
+      }
+    }
+
     if (!WidgetUtils.constCapableWidgets.contains(typeName)) return false;
 
     final constructor = node.constructorName.element;
