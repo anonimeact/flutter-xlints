@@ -26,14 +26,15 @@ class AvoidRecreatingRegExp extends DartLintRule {
       final type = node.constructorName.type.name2.lexeme;
       if (type != 'RegExp') return;
 
-      final inLoop = node.thisOrAncestorOfType<ForStatement>() != null ||
+      final inLoop =
+          node.thisOrAncestorOfType<ForStatement>() != null ||
           node.thisOrAncestorOfType<ForEachParts>() != null ||
           node.thisOrAncestorOfType<WhileStatement>() != null ||
           node.thisOrAncestorOfType<DoStatement>() != null;
 
       final inBuild =
           node.thisOrAncestorOfType<MethodDeclaration>()?.name.lexeme ==
-              'build';
+          'build';
 
       if (inLoop || inBuild) {
         reporter.atNode(node, code);

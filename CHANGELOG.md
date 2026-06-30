@@ -1,3 +1,9 @@
+## 1.0.6
+
+- Published the `example/` app again and added `example/example.dart` so pub.dev can detect the package example correctly.
+- Relaxed the direct `analyzer` constraint to cover newer stable releases while keeping the lint rule implementation unchanged.
+- Removed the unused direct `analyzer_plugin` dependency from the package manifest.
+
 ## 1.0.5
 
 - Refined `xlints_prefer_const_constructors` for `Text` so it no longer suggests `const` when the main text argument is not a simple string literal (e.g. interpolated values like `"+$value"`), reducing false positives.

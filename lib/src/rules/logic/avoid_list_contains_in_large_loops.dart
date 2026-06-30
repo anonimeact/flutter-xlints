@@ -32,7 +32,8 @@ class AvoidListContainsInLargeLoops extends DartLintRule {
       final targetType = target.staticType;
       if (targetType == null || !targetType.isDartCoreList) return;
 
-      final inLoop = node.thisOrAncestorOfType<ForStatement>() != null ||
+      final inLoop =
+          node.thisOrAncestorOfType<ForStatement>() != null ||
           node.thisOrAncestorOfType<ForEachParts>() != null ||
           node.thisOrAncestorOfType<WhileStatement>() != null ||
           node.thisOrAncestorOfType<DoStatement>() != null;

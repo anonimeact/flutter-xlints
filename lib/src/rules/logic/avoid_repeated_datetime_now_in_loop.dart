@@ -23,7 +23,8 @@ class AvoidRepeatedDateTimeNowInLoop extends DartLintRule {
     CustomLintContext context,
   ) {
     void reportIfInsideLoop(AstNode node) {
-      final inLoop = node.thisOrAncestorOfType<ForStatement>() != null ||
+      final inLoop =
+          node.thisOrAncestorOfType<ForStatement>() != null ||
           node.thisOrAncestorOfType<ForEachParts>() != null ||
           node.thisOrAncestorOfType<WhileStatement>() != null ||
           node.thisOrAncestorOfType<DoStatement>() != null;

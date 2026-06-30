@@ -2,6 +2,24 @@
 
 `xlints` is a Flutter lint package focused on widget and logic performance.
 
+## Quick Start
+
+Add `xlints` to `dev_dependencies`, then include the package config:
+
+```yaml
+# analysis_options.yaml
+include: package:xlints/analysis_options_xlints.yaml
+```
+
+Run lint checks with:
+
+```bash
+dart run custom_lint
+```
+
+See the published [`example/`](example/) app for a complete Flutter project that
+intentionally triggers the rules in this package.
+
 ## Available Rules
 
 <details>
